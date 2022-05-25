@@ -122,7 +122,7 @@ public class GUI {
     public void reflash() {
         csInfoBody = new Panel(new GridLayout(5, 7, 0, 0));
         String[] standardCS = new Core().reflash();
-        frame.setTitle(c.csInfo[0]+" - Cyanidation");
+        frame.setTitle("Cyanidation - " + c.csInfo[0]);
         for (int i = 0; i < 5 * 7; i++) {
             TextArea classUnit = new TextArea(standardCS[i],
                     0, 0, TextArea.SCROLLBARS_NONE);
