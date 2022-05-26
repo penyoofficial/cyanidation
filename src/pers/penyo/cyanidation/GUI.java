@@ -1,3 +1,5 @@
+// Copyright (c) Penyo. All rights reserved.
+
 package pers.penyo.cyanidation;
 
 import java.awt.*;
@@ -122,9 +124,10 @@ public class GUI {
         newCS.addActionListener(e -> newCSguide.setVisible(true));
         openStandardCS.addActionListener(e -> {
             open.setVisible(true);
-            if (open.getFile() != null)
+            if (open.getFile() != null) {
                 path = open.getDirectory() + open.getFile();
-            reflash(path);
+                reflash(path);
+            }
         });
         lastWeek.addActionListener(e -> {
             if (c.getWeek() + c.weekSkewing > 1)
@@ -184,8 +187,8 @@ public class GUI {
             TextArea classUnit = new TextArea(standardCS[i], 0, 0, TextArea.SCROLLBARS_NONE);
             classUnit.setEditable(false);
             csInfoBody.add(classUnit);
-            frame.setVisible(false);
-            frame.setVisible(true);
         }
+        frame.setVisible(false);
+        frame.setVisible(true);
     }
 }

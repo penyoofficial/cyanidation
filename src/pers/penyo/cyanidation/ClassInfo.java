@@ -1,3 +1,5 @@
+// Copyright (c) Penyo. All rights reserved.
+
 package pers.penyo.cyanidation;
 
 import java.util.ArrayList;

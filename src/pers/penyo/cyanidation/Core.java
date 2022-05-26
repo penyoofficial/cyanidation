@@ -1,3 +1,5 @@
+// Copyright (c) Penyo. All rights reserved.
+
 package pers.penyo.cyanidation;
 
 import java.io.*;
@@ -14,7 +16,7 @@ public class Core {
     public String[] reflash(String path) {
         try {
             InputStream ioCS = path == null ?
-                    Core.class.getResourceAsStream("cs.txt") : new FileInputStream(path);
+                    Core.class.getResourceAsStream("default.pcs") : new FileInputStream(path);
             return parse(ioCS);
         } catch (Exception e) {
             e.printStackTrace();
