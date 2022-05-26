@@ -49,6 +49,9 @@ public class GUI {
         yAxis.add(new Label("1", Label.CENTER));
         yAxis.add(new Label("2", Label.CENTER));
         yAxis.add(new Label("3", Label.CENTER));
+        yAxis.add(new Label("3", Label.CENTER));
+        yAxis.add(new Label("3", Label.CENTER));
+        yAxis.add(new Label("3", Label.CENTER));
         yAxis.add(new Label("4", Label.CENTER));
         yAxis.add(new Label("5", Label.CENTER));
 
@@ -85,11 +88,11 @@ public class GUI {
         frame.setResizable(false);
         frame.setVisible(true);
 
-        int edge = 10, axisWidth = 30, width = csEntireBody.getWidth(), height = csEntireBody.getHeight();
-        xAxis.setBounds(edge + axisWidth, edge, width - edge * 2 - axisWidth, axisWidth);
-        yAxis.setBounds(edge, edge + axisWidth, axisWidth, height - edge * 2 - axisWidth);
-        csInfoBody.setBounds(edge + axisWidth, edge + axisWidth, width - edge * 2 - axisWidth,
-                height - edge * 2 - axisWidth);
+        int edge = 10, axisShortEdge = 30, width = csEntireBody.getWidth(), height = csEntireBody.getHeight();
+        xAxis.setBounds(edge + axisShortEdge, edge, width - edge * 2 - axisShortEdge, axisShortEdge);
+        yAxis.setBounds(edge, edge + axisShortEdge, axisShortEdge, height - edge * 2 - axisShortEdge);
+        csInfoBody.setBounds(edge + axisShortEdge, edge + axisShortEdge, width - edge * 2 - axisShortEdge,
+                height - edge * 2 - axisShortEdge);
 
         csEntireBody.setBackground(Color.LIGHT_GRAY);
         bottomBar.setBackground(Color.GRAY);
@@ -122,7 +125,7 @@ public class GUI {
     public void reflash() {
         csInfoBody = new Panel(new GridLayout(5, 7, 0, 0));
         String[] standardCS = new Core().reflash();
-        frame.setTitle("Cyanidation - " + c.csInfo[0]);
+        frame.setTitle("Cyanidation - " + c.csGist[0]);
         for (int i = 0; i < 5 * 7; i++) {
             TextArea classUnit = new TextArea(standardCS[i],
                     0, 0, TextArea.SCROLLBARS_NONE);

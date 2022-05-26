@@ -5,7 +5,7 @@ import java.util.*;
 import java.text.*;
 
 public class Core {
-    String[] csInfo = new String[2];
+    String[] csGist = new String[2];
     ArrayList<ClassInfo> cs = new ArrayList<>();
     int weekSet = 0;
 
@@ -23,9 +23,12 @@ public class Core {
         try {
             byte[] parsedCS_I = new byte[ioCS.available()];
             ioCS.read(parsedCS_I);
-            String[] parsedCS_II = new String(parsedCS_I).split("\n");
-            csInfo[0] = parsedCS_II[0];
-            csInfo[1] = parsedCS_II[1];
+            String[] parsedCS_II = new String(parsedCS_I).split("\\$");
+            csGist = parsedCS_II[0].split("@");
+            for (int i = 1; i < parsedCS_II.length; i++)
+                cs.add(new ClassInfo(parsedCS_II[i]));
+
+            String[] result = new String[35];
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,7 +39,7 @@ public class Core {
         try {
             reflash();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date start = sdf.parse(csInfo[1]), now = new Date();
+            Date start = sdf.parse(csGist[1]), now = new Date();
             return (int) ((now.getTime() - start.getTime()) / 1000.0 / 60 / 60 / 24 / 7) + 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +54,7 @@ public class Core {
             case 2 -> "Monday";
             case 3 -> "Tuesday";
             case 4 -> "Wednesday";
-            case 5 -> "Thusday";
+            case 5 -> "Thursday";
             case 6 -> "Friday";
             case 7 -> "Saturday";
             default -> "Apresunday";
