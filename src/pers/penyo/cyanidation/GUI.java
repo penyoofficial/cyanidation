@@ -36,7 +36,7 @@ public class GUI {
     FileDialog open = new FileDialog(frame, "Open your CS file", FileDialog.LOAD),
             saveAs = new FileDialog(frame, "Save your CS file", FileDialog.SAVE);
 
-    Label upGuide = new Label("Please type the CS command below: ");
+    Label upGuide = new Label("Please type the CS command as the given format below: ");
     TextArea typeArea = new TextArea("""
             Title@TermBeginningDate
             $Subject1@Teacher1
@@ -51,7 +51,7 @@ public class GUI {
             DOW, POD - WB, WE@C7
             DOW, POD - WB, WE@C8
             DOW, POD - WB, WE@C9""");
-    Button saveCSas = new Button("Save");
+    Button saveCSas = new Button("Save the CS as...");
 
     String path = null;
 
@@ -122,7 +122,8 @@ public class GUI {
         newCS.addActionListener(e -> newCSguide.setVisible(true));
         openStandardCS.addActionListener(e -> {
             open.setVisible(true);
-            path = open.getDirectory() + open.getFile();
+            if (open.getFile() != null)
+                path = open.getDirectory() + open.getFile();
             reflash(path);
         });
         lastWeek.addActionListener(e -> {
