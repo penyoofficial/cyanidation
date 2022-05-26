@@ -3,32 +3,57 @@ package pers.penyo.cyanidation;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URI;
-import java.util.Arrays;
 
 public class GUI {
     Core c = new Core();
 
     public void boot() {
-        c.reflash();
         init();
         setLayout();
         actionRegist();
     }
 
     Frame frame = new Frame("Cyanidation");
-    Panel csEntireBody = new Panel(null), xAxis = new Panel(new GridLayout(1, 7, 0, 0)),
-            yAxis = new Panel(new GridLayout(5, 1, 0, 0)), csInfoBody = new Panel(new GridLayout(5, 7, 0, 0)),
-            bottomBar = new Panel(new GridLayout(1, 3, 0, 0)), bottomCtrl = new Panel();
-    Label dateNow = new Label("  Week " + c.getWeek() + ", " + c.getWeekDate()),
+    Panel csEntireBody = new Panel(null),
+            xAxis = new Panel(new GridLayout(1, 7, 0, 0)),
+            yAxis = new Panel(new GridLayout(5, 1, 0, 0)),
+            csInfoBody = new Panel(new GridLayout(5, 7, 0, 0)),
+            bottomBar = new Panel(new GridLayout(1, 3, 0, 0)),
+            bottomCtrl = new Panel();
+    Label weekNow = new Label("  Week " + (c.getWeek() + c.weekSkewing)),
             sentence = new Label(c.getSentence() + "  ", Label.RIGHT);
-    Button lastWeek = new Button("Last Week"), reflash = new Button("Reflash"), nextWeek = new Button("Next Week");
+    Button lastWeek = new Button("Last Week"),
+            reflash = new Button("Reflash"),
+            nextWeek = new Button("Next Week");
     MenuBar topBar = new MenuBar();
-    Menu file = new Menu("File"), help = new Menu("Help");
+    Menu file = new Menu("File"),
+            help = new Menu("Help");
     MenuItem newCS = new MenuItem("New a CS", new MenuShortcut(KeyEvent.VK_N, false)),
-            openCS = new MenuItem("Open an standard CS", new MenuShortcut(KeyEvent.VK_O, false)),
-            saveCS = new MenuItem("Save the CS", new MenuShortcut(KeyEvent.VK_S, false)),
-            saveCSas = new MenuItem("Save the CS as...", new MenuShortcut(KeyEvent.VK_S, true)),
-            getHelp = new MenuItem("Get official support"), about = new MenuItem("About");
+            openStandardCS = new MenuItem("Open a CS", new MenuShortcut(KeyEvent.VK_O, false)),
+            getSRC = new MenuItem("Get source code"),
+            about = new MenuItem("About");
+    Dialog newCSguide = new Dialog(frame, "New your own CS", false);
+    FileDialog open = new FileDialog(frame, "Open your CS file", FileDialog.LOAD),
+            saveAs = new FileDialog(frame, "Save your CS file", FileDialog.SAVE);
+
+    Label upGuide = new Label("Please type the CS command below: ");
+    TextArea typeArea = new TextArea("""
+            Title@TermBeginningDate
+            $Subject1@Teacher1
+            DayOfWeek, PhaseOfDay - WeekBeginning, WeekEnd@Classroom1
+            DOW, POD - WB, WE@C2
+            DOW, POD - WB, WE@C3
+            $S2@T2
+            DOW, POD - WB, WE@C4
+            DOW, POD - WB, WE@C5
+            DOW, POD - WB, WE@C6
+            $S3@T3
+            DOW, POD - WB, WE@C7
+            DOW, POD - WB, WE@C8
+            DOW, POD - WB, WE@C9""");
+    Button saveCSas = new Button("Save");
+
+    String path = null;
 
     public void init() {
         xAxis.add(new Label("Mon", Label.CENTER));
@@ -45,15 +70,15 @@ public class GUI {
         yAxis.add(new Label("4", Label.CENTER));
         yAxis.add(new Label("5", Label.CENTER));
 
-        reflash();
+        bottomCtrl.add(lastWeek);
+        bottomCtrl.add(reflash);
+        bottomCtrl.add(nextWeek);
 
-        for (Button button : Arrays.asList(lastWeek, reflash, nextWeek)) {
-            bottomCtrl.add(button);
-        }
-
-        bottomBar.add(dateNow);
+        bottomBar.add(weekNow);
         bottomBar.add(bottomCtrl);
         bottomBar.add(sentence);
+
+        reflash(null);
 
         csEntireBody.add(xAxis);
         csEntireBody.add(yAxis);
@@ -63,14 +88,16 @@ public class GUI {
         frame.add(bottomBar, BorderLayout.SOUTH);
 
         file.add(newCS);
-        file.add(openCS);
-        file.add(saveCS);
-        file.add(saveCSas);
-        help.add(getHelp);
+        file.add(openStandardCS);
+        help.add(getSRC);
         help.add(about);
         topBar.add(file);
         topBar.add(help);
         frame.setMenuBar(topBar);
+
+        newCSguide.add(upGuide, BorderLayout.NORTH);
+        newCSguide.add(typeArea);
+        newCSguide.add(saveCSas, BorderLayout.SOUTH);
     }
 
     public void setLayout() {
@@ -86,30 +113,38 @@ public class GUI {
 
         csEntireBody.setBackground(Color.LIGHT_GRAY);
         bottomBar.setBackground(Color.GRAY);
+
+        newCSguide.setSize(360, 640);
+        newCSguide.setResizable(false);
     }
 
     public void actionRegist() {
+        newCS.addActionListener(e -> newCSguide.setVisible(true));
+        openStandardCS.addActionListener(e -> {
+            open.setVisible(true);
+            path = open.getDirectory() + open.getFile();
+            reflash(path);
+        });
         lastWeek.addActionListener(e -> {
-            if (c.weekSkewing > 0)
+            if (c.getWeek() + c.weekSkewing > 1)
                 c.weekSkewing--;
-            dateNow = new Label("  Week " + (c.getWeek() + c.weekSkewing));
-            reflash();
+            reflash(path);
+            weekNow.setText("  Week " + (c.getWeek() + c.weekSkewing));
         });
         reflash.addActionListener(e -> {
             c.weekSkewing = 0;
-            reflash();
-            dateNow = new Label("  Week " + c.getWeek() + ", " + c.getWeekDate());
+            reflash(path);
+            weekNow.setText("  Week " + (c.getWeek() + c.weekSkewing));
         });
         nextWeek.addActionListener(e -> {
-            if (c.weekSkewing < c.weekLimit)
+            if (c.getWeek() + c.weekSkewing < c.weekLimit)
                 c.weekSkewing++;
-            dateNow = new Label("  Week " + (c.getWeek() + c.weekSkewing));
-            reflash();
+            reflash(path);
+            weekNow.setText("  Week " + (c.getWeek() + c.weekSkewing));
         });
-        getHelp.addActionListener(e -> {
+        getSRC.addActionListener(e -> {
             try {
-                Desktop.getDesktop().browse(new URI(
-                        "https://qm.qq.com/cgi-bin/qm/qr?k=1NYJ9kl-yoTJVjBa3e1PgUrqA_flIdtW&authKey=yUZJhaqtkZCmyhJCA2qvLAJASlYgLcPEd3bSJO20BDERXrCmPfGG%2BVmXppSGKHF7&noverify=0&group_code=769409099"));
+                Desktop.getDesktop().browse(new URI("https://github.com/penyoofficial/cyanidation"));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -121,22 +156,35 @@ public class GUI {
                 e1.printStackTrace();
             }
         });
+        saveCSas.addActionListener(e -> {
+            saveAs.setVisible(true);
+            c.save(saveAs.getDirectory() + saveAs.getFile(), typeArea.getText());
+            newCSguide.setVisible(false);
+        });
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
+        newCSguide.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                newCSguide.setVisible(false);
+            }
+        });
     }
 
-    public void reflash() {
-        csInfoBody = new Panel(new GridLayout(5, 7, 0, 0));
-        String[] standardCS = c.reflash();
+    public void reflash(String path) {
+        csInfoBody.removeAll();
+        String[] standardCS = c.reflash(path);
         frame.setTitle("Cyanidation - " + c.csGist[0]);
         for (int i = 0; i < 35; i++) {
             TextArea classUnit = new TextArea(standardCS[i], 0, 0, TextArea.SCROLLBARS_NONE);
             classUnit.setEditable(false);
             csInfoBody.add(classUnit);
+            frame.setVisible(false);
+            frame.setVisible(true);
         }
     }
 }

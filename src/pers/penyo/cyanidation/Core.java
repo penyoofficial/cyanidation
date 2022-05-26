@@ -1,8 +1,9 @@
 package pers.penyo.cyanidation;
 
-import java.io.InputStream;
-import java.util.*;
-import java.text.*;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Core {
     String[] csGist = new String[2];
@@ -10,9 +11,10 @@ public class Core {
     int weekSkewing = 0, weekLimit = 20;
     boolean fromCore = false;
 
-    public String[] reflash() {
+    public String[] reflash(String path) {
         try {
-            InputStream ioCS = Core.class.getResourceAsStream("cs.txt");
+            InputStream ioCS = path == null ?
+                    Core.class.getResourceAsStream("cs.txt") : new FileInputStream(path);
             return parse(ioCS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,10 +51,19 @@ public class Core {
         return new String[35];
     }
 
+    public void save(String path, String contain) {
+        try {
+            OutputStream f = new FileOutputStream(path);
+            f.write(contain.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getWeek() {
         try {
             fromCore = true;
-            reflash();
+            reflash(null);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date start = sdf.parse(csGist[1]), now = new Date();
             return (int) ((now.getTime() - start.getTime()) / 1000.0 / 60 / 60 / 24 / 7) + 1;
@@ -60,20 +71,6 @@ public class Core {
             e.printStackTrace();
         }
         return -1;
-    }
-
-    public String getWeekDate() {
-        Calendar c = Calendar.getInstance();
-        return switch (c.get(Calendar.DAY_OF_WEEK)) {
-            case 1 -> "Sunday";
-            case 2 -> "Monday";
-            case 3 -> "Tuesday";
-            case 4 -> "Wednesday";
-            case 5 -> "Thursday";
-            case 6 -> "Friday";
-            case 7 -> "Saturday";
-            default -> "Apresunday";
-        };
     }
 
     public String getSentence() {

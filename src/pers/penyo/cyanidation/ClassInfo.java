@@ -14,8 +14,8 @@ public class ClassInfo {
             String[] info = infoCut.split("@");
             dayOfWeek = info[0].charAt(0) - '0';
             phaseOfDay = info[0].charAt(3) - '0';
-            weekBegin = Integer.valueOf(info[0].substring(7, 9));
-            weekEnd = Integer.valueOf(info[0].substring(11, 13));
+            weekBegin = Integer.parseInt(info[0].substring(7, 9));
+            weekEnd = Integer.parseInt(info[0].substring(11, 13));
             try {
                 spInfo = info[1];
             } catch (Exception e) {
