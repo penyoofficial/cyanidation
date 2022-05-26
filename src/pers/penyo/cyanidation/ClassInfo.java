@@ -6,14 +6,21 @@ public class ClassInfo {
     String[] gist;
     ArrayList<TimeMoph> timeMophPack = new ArrayList<>();
 
-    public static class TimeMoph {
+    public class TimeMoph {
         int weekBegin, weekEnd, dayOfWeek, phaseOfDay;
+        String spInfo;
 
-        public TimeMoph(String info) {
-            dayOfWeek = info.charAt(0) - '0';
-            phaseOfDay = info.charAt(3) - '0';
-            weekBegin = Integer.parseInt(info.substring(7, 8));
-            weekEnd = Integer.parseInt(info.substring(11, 12));
+        public TimeMoph(String infoCut) {
+            String[] info = infoCut.split("@");
+            dayOfWeek = info[0].charAt(0) - '0';
+            phaseOfDay = info[0].charAt(3) - '0';
+            weekBegin = Integer.parseInt(info[0].substring(7, 8));
+            weekEnd = Integer.parseInt(info[0].substring(11, 12));
+            try {
+                spInfo = info[1];
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

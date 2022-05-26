@@ -7,7 +7,8 @@ import java.text.*;
 public class Core {
     String[] csGist = new String[2];
     ArrayList<ClassInfo> cs = new ArrayList<>();
-    int weekSet = 0;
+    int weekSkewing = 0, weekLimit = 20;
+    boolean fromCore;
 
     public String[] reflash() {
         try {
@@ -28,7 +29,19 @@ public class Core {
             for (int i = 1; i < parsedCS_II.length; i++)
                 cs.add(new ClassInfo(parsedCS_II[i]));
 
+            if (fromCore) {
+                fromCore = false;
+                return new String[35];
+            }
+
             String[] result = new String[35];
+            for (int i = getWeek() + weekSkewing; i < weekLimit; i++)
+                for (ClassInfo thisCS : cs)
+                    for (ClassInfo.TimeMoph tm : thisCS.timeMophPack)
+                        if (tm.weekBegin <= i - 1 && tm.weekEnd >= i - 1)
+                            result[(tm.dayOfWeek - 1) * 5 + (tm.phaseOfDay - 1)] =
+                                    thisCS.gist[0] + "/" + tm.spInfo + "\n" + thisCS.gist[1];
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,6 +50,7 @@ public class Core {
 
     public int getWeek() {
         try {
+            fromCore = true;
             reflash();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date start = sdf.parse(csGist[1]), now = new Date();
