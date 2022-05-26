@@ -12,7 +12,7 @@ public class Core {
 
     public String[] reflash() {
         try {
-            InputStream ioCS = Core.class.getResourceAsStream("cyanidation.pdp");
+            InputStream ioCS = Core.class.getResourceAsStream("cs.txt");
             return parse(ioCS);
         } catch (Exception e) {
             e.printStackTrace();
