@@ -16,26 +16,19 @@ public class GUI {
     }
 
     Frame frame = new Frame("Cyanidation");
-    Panel csEntireBody = new Panel(null),
-            xAxis = new Panel(new GridLayout(1, 7, 0, 0)),
-            yAxis = new Panel(new GridLayout(5, 1, 0, 0)),
-            csInfoBody = new Panel(new GridLayout(5, 7, 0, 0)),
-            bottomBar = new Panel(new GridLayout(1, 3, 0, 0)),
-            bottomCtrl = new Panel();
+    Panel csEntireBody = new Panel(null), xAxis = new Panel(new GridLayout(1, 7, 0, 0)),
+            yAxis = new Panel(new GridLayout(5, 1, 0, 0)), csInfoBody = new Panel(new GridLayout(5, 7, 0, 0)),
+            bottomBar = new Panel(new GridLayout(1, 3, 0, 0)), bottomCtrl = new Panel();
     Label dateNow = new Label("  Week " + c.getWeek() + ", " + c.getWeekDate()),
             sentence = new Label(c.getSentence() + "  ", Label.RIGHT);
-    Button lastWeek = new Button("Last Week"),
-            reflash = new Button("Reflash"),
-            nextWeek = new Button("Next Week");
+    Button lastWeek = new Button("Last Week"), reflash = new Button("Reflash"), nextWeek = new Button("Next Week");
     MenuBar topBar = new MenuBar();
-    Menu file = new Menu("File"),
-            help = new Menu("Help");
+    Menu file = new Menu("File"), help = new Menu("Help");
     MenuItem newCS = new MenuItem("New a CS", new MenuShortcut(KeyEvent.VK_N, false)),
             openCS = new MenuItem("Open an standard CS", new MenuShortcut(KeyEvent.VK_O, false)),
             saveCS = new MenuItem("Save the CS", new MenuShortcut(KeyEvent.VK_S, false)),
             saveCSas = new MenuItem("Save the CS as...", new MenuShortcut(KeyEvent.VK_S, true)),
-            getHelp = new MenuItem("Get official support"),
-            about = new MenuItem("About");
+            getHelp = new MenuItem("Get official support"), about = new MenuItem("About");
 
     public void init() {
         xAxis.add(new Label("Mon", Label.CENTER));
@@ -48,9 +41,6 @@ public class GUI {
 
         yAxis.add(new Label("1", Label.CENTER));
         yAxis.add(new Label("2", Label.CENTER));
-        yAxis.add(new Label("3", Label.CENTER));
-        yAxis.add(new Label("3", Label.CENTER));
-        yAxis.add(new Label("3", Label.CENTER));
         yAxis.add(new Label("3", Label.CENTER));
         yAxis.add(new Label("4", Label.CENTER));
         yAxis.add(new Label("5", Label.CENTER));
@@ -99,10 +89,27 @@ public class GUI {
     }
 
     public void actionRegist() {
-        reflash.addActionListener(e -> reflash());
+        lastWeek.addActionListener(e -> {
+            if (c.weekSkewing > 0)
+                c.weekSkewing--;
+            dateNow = new Label("  Week " + (c.getWeek() + c.weekSkewing));
+            reflash();
+        });
+        reflash.addActionListener(e -> {
+            c.weekSkewing = 0;
+            reflash();
+            dateNow = new Label("  Week " + c.getWeek() + ", " + c.getWeekDate());
+        });
+        nextWeek.addActionListener(e -> {
+            if (c.weekSkewing < c.weekLimit)
+                c.weekSkewing++;
+            dateNow = new Label("  Week " + (c.getWeek() + c.weekSkewing));
+            reflash();
+        });
         getHelp.addActionListener(e -> {
             try {
-                Desktop.getDesktop().browse(new URI("https://qm.qq.com/cgi-bin/qm/qr?k=1NYJ9kl-yoTJVjBa3e1PgUrqA_flIdtW&authKey=yUZJhaqtkZCmyhJCA2qvLAJASlYgLcPEd3bSJO20BDERXrCmPfGG%2BVmXppSGKHF7&noverify=0&group_code=769409099"));
+                Desktop.getDesktop().browse(new URI(
+                        "https://qm.qq.com/cgi-bin/qm/qr?k=1NYJ9kl-yoTJVjBa3e1PgUrqA_flIdtW&authKey=yUZJhaqtkZCmyhJCA2qvLAJASlYgLcPEd3bSJO20BDERXrCmPfGG%2BVmXppSGKHF7&noverify=0&group_code=769409099"));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -124,11 +131,10 @@ public class GUI {
 
     public void reflash() {
         csInfoBody = new Panel(new GridLayout(5, 7, 0, 0));
-        String[] standardCS = new Core().reflash();
+        String[] standardCS = c.reflash();
         frame.setTitle("Cyanidation - " + c.csGist[0]);
-        for (int i = 0; i < 5 * 7; i++) {
-            TextArea classUnit = new TextArea(standardCS[i],
-                    0, 0, TextArea.SCROLLBARS_NONE);
+        for (int i = 0; i < 35; i++) {
+            TextArea classUnit = new TextArea(standardCS[i], 0, 0, TextArea.SCROLLBARS_NONE);
             classUnit.setEditable(false);
             csInfoBody.add(classUnit);
         }
