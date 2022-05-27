@@ -2,14 +2,17 @@
 
 package pers.penyo.cyanidation;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URI;
 
 public class GUI {
     Core c = new Core();
+    String version;
 
-    public void boot() {
+    public void boot(String version) {
+        this.version = version;
         init();
         setLayout();
         actionRegist();
@@ -34,7 +37,8 @@ public class GUI {
             openStandardCS = new MenuItem("Open a CS", new MenuShortcut(KeyEvent.VK_O, false)),
             getSRC = new MenuItem("Get source code"),
             about = new MenuItem("About");
-    Dialog newCSguide = new Dialog(frame, "New your own CS", false);
+    Dialog newCSguide = new Dialog(frame, "New your own CS", false),
+            aboutGuide = new Dialog(frame, "About us", false);
     FileDialog open = new FileDialog(frame, "Open your CS file", FileDialog.LOAD),
             saveAs = new FileDialog(frame, "Save your CS file", FileDialog.SAVE);
 
@@ -53,7 +57,15 @@ public class GUI {
             DOW, POD - WB, WE@C7
             DOW, POD - WB, WE@C8
             DOW, POD - WB, WE@C9""");
+    Panel saveCSasCtrl = new Panel(new FlowLayout(FlowLayout.RIGHT));
     Button saveCSas = new Button("Save the CS as...");
+
+    Box textAbout = Box.createVerticalBox();
+    Label title = new Label(),
+            subtitle = new Label("To be the lightest classschedule."),
+            copyright = new Label("Copyright (c) Penyo. All rights reserved.");
+    Panel quitAboutCtrl = new Panel(new FlowLayout(FlowLayout.RIGHT));
+    Button quitAbout = new Button("OK");
 
     String path = null;
 
@@ -99,7 +111,21 @@ public class GUI {
 
         newCSguide.add(upGuide, BorderLayout.NORTH);
         newCSguide.add(typeArea);
-        newCSguide.add(saveCSas, BorderLayout.SOUTH);
+        saveCSasCtrl.add(saveCSas);
+        newCSguide.add(saveCSasCtrl, BorderLayout.SOUTH);
+
+        textAbout.add(title);
+        textAbout.add(subtitle);
+        textAbout.add(new Label(""));
+        textAbout.add(new Label(""));
+        textAbout.add(new Label(""));
+        textAbout.add(new Label(""));
+        textAbout.add(new Label(""));
+        textAbout.add(copyright);
+        aboutGuide.add(new Label(), BorderLayout.WEST);
+        aboutGuide.add(textAbout);
+        quitAboutCtrl.add(quitAbout);
+        aboutGuide.add(quitAboutCtrl, BorderLayout.SOUTH);
     }
 
     public void setLayout() {
@@ -116,8 +142,13 @@ public class GUI {
         csEntireBody.setBackground(Color.LIGHT_GRAY);
         bottomBar.setBackground(Color.GRAY);
 
-        newCSguide.setSize(360, 640);
+        newCSguide.setSize(720, 405);
         newCSguide.setResizable(false);
+
+        aboutGuide.setSize(480, 270);
+        aboutGuide.setResizable(false);
+        title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
+        subtitle.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 10));
     }
 
     public void actionRegist() {
@@ -154,17 +185,15 @@ public class GUI {
             }
         });
         about.addActionListener(e -> {
-            try {
-                Desktop.getDesktop().browse(new URI("https://github.com/penyoofficial"));
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+            title.setText("Cyanidation " + version);
+            aboutGuide.setVisible(true);
         });
         saveCSas.addActionListener(e -> {
             saveAs.setVisible(true);
             c.save(saveAs.getDirectory() + saveAs.getFile(), typeArea.getText());
             newCSguide.setVisible(false);
         });
+        quitAbout.addActionListener(e -> aboutGuide.setVisible(false));
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -175,6 +204,12 @@ public class GUI {
             @Override
             public void windowClosing(WindowEvent e) {
                 newCSguide.setVisible(false);
+            }
+        });
+        aboutGuide.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                aboutGuide.setVisible(false);
             }
         });
     }
