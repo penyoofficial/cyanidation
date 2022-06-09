@@ -78,14 +78,14 @@ public class Core {
     public String getSentence() {
         int rd = (int) (Math.random() * 114514);
         return switch (rd % 7) {
-            case 0 -> "I'll stand on my own two feet.";
-            case 1 -> "Genius is an infinite capacity for taking pains.";
-            case 2 -> "Fading is true while flowering is past.";
-            case 3 -> "All or nothing, now or never.";
-            case 4 -> "Every man is a poet when he is in love.";
-            case 5 -> "Life is a journey, not the destination, but the scenery along.";
-            case 6 -> "Truth needs no color.";
-            default -> "One for all, all for one.";
+            case 0 -> "要在文化上有成绩，则非韧不可。 ——鲁迅";
+            case 1 -> "倘只看书，便变成书橱。 ——鲁迅";
+            case 2 -> "但我坦然，欣然，我将大笑，我将歌唱。 ——鲁迅";
+            case 3 -> "改造自己，总比禁止别人来的难。 ——鲁迅";
+            case 4 -> "心事浩茫连广宇，于无声处听惊雷。 ——鲁迅";
+            case 5 -> "自由固不是钱所买到的，但能够为钱而卖掉。 ——鲁迅";
+            case 6 -> "人生得一知已足矣，斯世当以同怀视之。 ——鲁迅";
+            default -> "丢掉幻想，准备斗争。 ——毛泽东";
         };
     }
 }

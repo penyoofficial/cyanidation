@@ -5,6 +5,7 @@ package pers.penyo.cyanidation;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.InputStream;
 import java.net.URI;
 
 public class GUI {
@@ -18,32 +19,32 @@ public class GUI {
         actionRegist();
     }
 
-    Frame frame = new Frame("Cyanidation");
-    Panel csEntireBody = new Panel(null),
-            xAxis = new Panel(new GridLayout(1, 7, 0, 0)),
-            yAxis = new Panel(new GridLayout(5, 1, 0, 0)),
-            csInfoBody = new Panel(new GridLayout(5, 7, 0, 0)),
-            bottomBar = new Panel(new GridLayout(1, 3, 0, 0)),
-            bottomCtrl = new Panel();
-    Label weekNow = new Label("  Week " + (c.getWeek() + c.weekSkewing)),
-            sentence = new Label(c.getSentence() + "  ", Label.RIGHT);
-    Button lastWeek = new Button("Last Week"),
-            reflash = new Button("Reflash"),
-            nextWeek = new Button("Next Week");
-    MenuBar topBar = new MenuBar();
-    Menu file = new Menu("File"),
-            help = new Menu("Help");
-    MenuItem newCS = new MenuItem("New a CS", new MenuShortcut(KeyEvent.VK_N, false)),
-            openStandardCS = new MenuItem("Open a CS", new MenuShortcut(KeyEvent.VK_O, false)),
-            getSRC = new MenuItem("Get source code"),
-            about = new MenuItem("About");
-    Dialog newCSguide = new Dialog(frame, "New your own CS", false),
-            aboutGuide = new Dialog(frame, "About us", false);
+    JFrame frame = new JFrame("Cyanidation");
+    JPanel csEntireBody = new JPanel(null),
+            xAxis = new JPanel(new GridLayout(1, 7, 0, 0)),
+            yAxis = new JPanel(new GridLayout(5, 1, 0, 0)),
+            csInfoBody = new JPanel(new GridLayout(5, 7, 0, 0)),
+            bottomBar = new JPanel(new GridLayout(1, 3, 0, 0)),
+            bottomCtrl = new JPanel();
+    JLabel weekNow = new JLabel("  第 " + (c.getWeek() + c.weekSkewing) + " 周（当前周）"),
+            sentence = new JLabel(c.getSentence() + "  ", JLabel.RIGHT);
+    JButton lastWeek = new JButton("上一周"),
+            reflash = new JButton("回滚"),
+            nextWeek = new JButton("下一周");
+    JMenuBar topBar = new JMenuBar();
+    JMenu file = new JMenu("文件"),
+            help = new JMenu("帮助");
+    JMenuItem newCS = new JMenuItem("新建课程表", KeyEvent.VK_N),
+            openStandardCS = new JMenuItem("打开课程表", KeyEvent.VK_O),
+            getSRC = new JMenuItem("获取源代码"),
+            about = new JMenuItem("关于");
+    JDialog newCSguide = new JDialog(frame, "课程表编辑器", false),
+            aboutGuide = new JDialog(frame, "关于我们", false);
     FileDialog open = new FileDialog(frame, "Open your CS file", FileDialog.LOAD),
             saveAs = new FileDialog(frame, "Save your CS file", FileDialog.SAVE);
 
-    Label upGuide = new Label("Please type the CS command as the given format below: ");
-    TextArea typeArea = new TextArea("""
+    JLabel upGuide = new JLabel("请按照下面给出的格式编纂课程表：");
+    JTextArea typeArea = new JTextArea("""
             Title@TermBeginningDate
             $Subject1@Teacher1
             DayOfWeek, PhaseOfDay - WeekBeginning, WeekEnd@Classroom1
@@ -57,32 +58,34 @@ public class GUI {
             DOW, POD - WB, WE@C7
             DOW, POD - WB, WE@C8
             DOW, POD - WB, WE@C9""");
-    Panel saveCSasCtrl = new Panel(new FlowLayout(FlowLayout.RIGHT));
-    Button saveCSas = new Button("Save the CS as...");
+    JPanel newOperation = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    JButton readDefaultSample = new JButton("阅读案例"),
+            saveCSas = new JButton("保存");
 
     Box textAbout = Box.createVerticalBox();
-    Label title = new Label(),
-            subtitle = new Label("To be the lightest classschedule."),
-            copyright = new Label("Copyright (c) Penyo. All rights reserved.");
-    Panel quitAboutCtrl = new Panel(new FlowLayout(FlowLayout.RIGHT));
-    Button quitAbout = new Button("OK");
+    JLabel title = new JLabel(),
+            subtitle = new JLabel("To be the lightest classschedule."),
+            copyright = new JLabel("Copyright (c) Penyo. All rights reserved.");
+    JPanel quitAboutCtrl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    JButton quitAbout = new JButton("确定");
 
     String path = null;
+    boolean userDoes = true;
 
     public void init() {
-        xAxis.add(new Label("Mon", Label.CENTER));
-        xAxis.add(new Label("Tue", Label.CENTER));
-        xAxis.add(new Label("Wes", Label.CENTER));
-        xAxis.add(new Label("Thu", Label.CENTER));
-        xAxis.add(new Label("Fri", Label.CENTER));
-        xAxis.add(new Label("Sat", Label.CENTER));
-        xAxis.add(new Label("Sun", Label.CENTER));
+        xAxis.add(new JLabel("Mon", JLabel.CENTER));
+        xAxis.add(new JLabel("Tue", JLabel.CENTER));
+        xAxis.add(new JLabel("Wes", JLabel.CENTER));
+        xAxis.add(new JLabel("Thu", JLabel.CENTER));
+        xAxis.add(new JLabel("Fri", JLabel.CENTER));
+        xAxis.add(new JLabel("Sat", JLabel.CENTER));
+        xAxis.add(new JLabel("Sun", JLabel.CENTER));
 
-        yAxis.add(new Label("1", Label.CENTER));
-        yAxis.add(new Label("2", Label.CENTER));
-        yAxis.add(new Label("3", Label.CENTER));
-        yAxis.add(new Label("4", Label.CENTER));
-        yAxis.add(new Label("5", Label.CENTER));
+        yAxis.add(new JLabel("1", JLabel.CENTER));
+        yAxis.add(new JLabel("2", JLabel.CENTER));
+        yAxis.add(new JLabel("3", JLabel.CENTER));
+        yAxis.add(new JLabel("4", JLabel.CENTER));
+        yAxis.add(new JLabel("5", JLabel.CENTER));
 
         bottomCtrl.add(lastWeek);
         bottomCtrl.add(reflash);
@@ -107,20 +110,18 @@ public class GUI {
         help.add(about);
         topBar.add(file);
         topBar.add(help);
-        frame.setMenuBar(topBar);
+        frame.setJMenuBar(topBar);
 
         newCSguide.add(upGuide, BorderLayout.NORTH);
         newCSguide.add(typeArea);
-        saveCSasCtrl.add(saveCSas);
-        newCSguide.add(saveCSasCtrl, BorderLayout.SOUTH);
+        newOperation.add(readDefaultSample);
+        newOperation.add(saveCSas);
+        newCSguide.add(newOperation, BorderLayout.SOUTH);
 
         textAbout.add(title);
         textAbout.add(subtitle);
-        textAbout.add(new Label(""));
-        textAbout.add(new Label(""));
-        textAbout.add(new Label(""));
-        textAbout.add(new Label(""));
-        textAbout.add(new Label(""));
+        for (int i = 0; i < 5; i++)
+            textAbout.add(new Label(""));
         textAbout.add(copyright);
         aboutGuide.add(new Label(), BorderLayout.WEST);
         aboutGuide.add(textAbout);
@@ -141,9 +142,12 @@ public class GUI {
 
         csEntireBody.setBackground(Color.LIGHT_GRAY);
         bottomBar.setBackground(Color.GRAY);
+        bottomCtrl.setBackground(Color.GRAY);
 
         newCSguide.setSize(720, 405);
         newCSguide.setResizable(false);
+
+        typeArea.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 11));
 
         aboutGuide.setSize(480, 270);
         aboutGuide.setResizable(false);
@@ -153,6 +157,17 @@ public class GUI {
 
     public void actionRegist() {
         newCS.addActionListener(e -> newCSguide.setVisible(true));
+        readDefaultSample.addActionListener(e -> {
+            try {
+                InputStream ioCS = Core.class.getResourceAsStream("default.pcs");
+                byte[] parsedCS_I = new byte[ioCS.available()];
+                ioCS.read(parsedCS_I);
+                typeArea.setText(new String(parsedCS_I));
+                userDoes = false;
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
         openStandardCS.addActionListener(e -> {
             open.setVisible(true);
             if (open.getFile() != null) {
@@ -164,18 +179,18 @@ public class GUI {
             if (c.getWeek() + c.weekSkewing > 1)
                 c.weekSkewing--;
             reflash(path);
-            weekNow.setText("  Week " + (c.getWeek() + c.weekSkewing));
+            weekNow.setText("  第 " + (c.getWeek() + c.weekSkewing) + " 周");
         });
         reflash.addActionListener(e -> {
             c.weekSkewing = 0;
             reflash(path);
-            weekNow.setText("  Week " + (c.getWeek() + c.weekSkewing));
+            weekNow.setText("  第 " + (c.getWeek() + c.weekSkewing) + " 周（当前周）");
         });
         nextWeek.addActionListener(e -> {
             if (c.getWeek() + c.weekSkewing < c.weekLimit)
                 c.weekSkewing++;
             reflash(path);
-            weekNow.setText("  Week " + (c.getWeek() + c.weekSkewing));
+            weekNow.setText("  第 " + (c.getWeek() + c.weekSkewing) + " 周");
         });
         getSRC.addActionListener(e -> {
             try {
@@ -187,6 +202,14 @@ public class GUI {
         about.addActionListener(e -> {
             title.setText("Cyanidation " + version);
             aboutGuide.setVisible(true);
+        });
+        typeArea.addPropertyChangeListener(e -> {
+            if (userDoes)
+                typeArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+            else {
+                typeArea.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 11));
+                userDoes = true;
+            }
         });
         saveCSas.addActionListener(e -> {
             saveAs.setVisible(true);
