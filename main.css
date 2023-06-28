@@ -1,14 +1,22 @@
-/* 默认主题 */
 :root {
-    --main-c: #1a73e8;
-    --text-in-main-c: #fff;
+    /* 背景色 */
+    --bg-c: #fff;
+    /* 文字色 */
     --text-c: #000;
-    --border-c: #ddd;
+    /* 控件色 */
+    --ctrl-c: #d0d7de;
+    /* 主题色 */
+    --theme-c: #1a73e8;
+    /* 功能文字色 */
+    --fn-text-c: #fff;
+    /* 次主题色 */
+    --sub-theme-c: #da3633;
 }
 
 * {
     margin: 0;
     padding: 0;
+    /* zoom: 1.1; */
 }
 
 #guidance {
@@ -24,7 +32,7 @@
     width: 100%;
     height: 100%;
     padding-left: 10%;
-    background: linear-gradient(to right, #fff 30%, transparent 150%);
+    background: linear-gradient(to right, var(--bg-c) 30%, transparent 150%);
     background-size: cover;
 }
 
@@ -35,12 +43,13 @@
 
 #guidance>div>h1 {
     margin: 8% 0 4%;
+    color: var(--text-c);
     font-weight: 400;
 }
 
 #guidance>div>p {
     margin: -3% 0;
-    color: var(--border-c);
+    color: var(--text-c);
     font-weight: 400;
     font-style: italic;
 }
@@ -58,16 +67,16 @@
 }
 
 #guidance button {
-    background: var(--main-c);
+    background: var(--theme-c);
     padding: 10px 22px;
     border: none;
     border-radius: 4px;
-    color: var(--text-in-main-c);
+    color: var(--fn-text-c);
 }
 
 #guidance button:hover {
     filter: brightness(90%);
-    box-shadow: 1px 1px 1px var(--border-c);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 #guidance button:focus {
@@ -75,23 +84,23 @@
 }
 
 #guidance button:disabled {
-    background: var(--border-c);
+    background: var(--ctrl-c);
     filter: none;
     box-shadow: none;
 }
 
 #guidance select {
-    background: var(--text-in-main-c);
+    background: var(--bg-c);
     padding: 10px 22px;
-    border: 1px solid var(--border-c);
+    border: 1px solid var(--ctrl-c);
     border-radius: 4px;
     color: var(--text-c);
 }
 
 #guidance input[type="file"] {
-    background: var(--text-in-main-c);
+    background: var(--bg-c);
     padding: 10px 22px;
-    border: 1px solid var(--border-c);
+    border: 1px solid var(--ctrl-c);
     border-radius: 4px;
     color: var(--text-c);
 }
@@ -100,6 +109,43 @@
     position: fixed;
     width: 100%;
     height: 100%;
+    background: var(--bg-c);
+}
+
+#dashboard iframe {
+    position: absolute;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+}
+
+#dashboard .f-go {
+    position: absolute;
+    right: 42%;
+    width: 48px;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+#dashboard .f-go path {
+    fill: var(--ctrl-c);
+    transition: all 0.66s;
+}
+
+#dashboard .f-go path:active {
+    fill: var(--theme-c);
+    transition: none;
+}
+
+#dashboard #f-go-back {
+    bottom: 53%;
+}
+
+#dashboard #f-go-ahead {
+    top: 53%;
 }
 
 #dashboard>div {
@@ -108,7 +154,7 @@
     width: 36%;
     height: calc(41% - 160px);
     padding-top: 160px;
-    border-top: 1px solid var(--border-c);
+    border-top: 1px solid var(--ctrl-c);
     overflow: hidden;
     user-select: none;
 }
@@ -118,38 +164,42 @@
     top: 0;
     right: 0;
     padding: 2px 8px;
-    background: var(--border-c);
-    color: var(--text-in-main-c);
+    background: var(--ctrl-c);
+    color: var(--bg-c);
     font-style: normal;
     font-size: 14px;
 }
 
 #dashboard>div .date.weekend {
     background: transparent;
-    border: 1px solid var(--border-c);
+    border: 1px solid var(--ctrl-c);
     border-top: none;
-    color: var(--border-c);
+    color: var(--ctrl-c);
 }
 
 #dashboard>div .unit-title {
     position: absolute;
     top: -50px;
     color: transparent;
-    -webkit-text-stroke: 1px var(--border-c);
+    -webkit-text-stroke: 0.8px var(--ctrl-c);
     font-style: italic;
     font-weight: bolder;
     font-size: 144px;
 }
 
 #dashboard>div .cut {
-    color: var(--border-c);
+    color: var(--ctrl-c);
     margin-left: 15px;
 }
 
-#today {
+#dashboard #today {
     top: 6%;
 }
 
-#tomorrow {
+#dashboard #tomorrow {
     bottom: 6%;
+}
+
+#f-reset {
+    display: none;
 }

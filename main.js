@@ -83,3 +83,34 @@ function render(time) {
         render(new Date())
     }, 1800000)
 }
+
+/**
+ * 重置请求缓存
+ * @type {Date[]}
+*/
+let resetRequest = []
+
+/**
+ * 重置程序。只能由用户在控制台*或者自定义控件监听*里被调用。
+*/
+function reset() {
+    if (confirm("您正在做的操作将导致程序重置，确定要这么做吗？")) {
+        document.querySelector("#f-reset").click()
+        resetRequest = []
+    }
+}
+
+window.addEventListener("keydown", function (event) {
+    const secLim = 1
+    const timesLim = 8
+    if (event.key === "r" || event.key === "R") {
+        resetRequest.push(Date.now())
+        if (resetRequest.length >= timesLim) {
+            let lastThreeResetRequest = resetRequest.slice(-timesLim);
+            if (lastThreeResetRequest[timesLim - 1] - lastThreeResetRequest[0] <= secLim * 1000)
+                reset()
+        }
+        if (resetRequest.length >= timesLim + 1)
+            resetRequest.shift()
+    }
+})
