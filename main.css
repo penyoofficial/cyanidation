@@ -1,0 +1,155 @@
+/* 默认主题 */
+:root {
+    --main-c: #1a73e8;
+    --text-in-main-c: #fff;
+    --text-c: #000;
+    --border-c: #ddd;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#guidance {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: url(./assets/g-bg.jpg);
+    background-size: cover;
+}
+
+#guidance>div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding-left: 10%;
+    background: linear-gradient(to right, #fff 30%, transparent 150%);
+    background-size: cover;
+}
+
+#guidance>div>* {
+    display: block;
+    margin: 2% 0;
+}
+
+#guidance>div>h1 {
+    margin: 8% 0 4%;
+    font-weight: 400;
+}
+
+#guidance>div>p {
+    margin: -3% 0;
+    color: var(--border-c);
+    font-weight: 400;
+    font-style: italic;
+}
+
+#guidance>div>span {
+    position: fixed;
+    left: 10%;
+    bottom: 20%;
+    width: 50%;
+    margin: 0;
+}
+
+#guidance>div>span>* {
+    margin-right: 2%;
+}
+
+#guidance button {
+    background: var(--main-c);
+    padding: 10px 22px;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-in-main-c);
+}
+
+#guidance button:hover {
+    filter: brightness(90%);
+    box-shadow: 1px 1px 1px var(--border-c);
+}
+
+#guidance button:focus {
+    filter: brightness(80%);
+}
+
+#guidance button:disabled {
+    background: var(--border-c);
+    filter: none;
+    box-shadow: none;
+}
+
+#guidance select {
+    background: var(--text-in-main-c);
+    padding: 10px 22px;
+    border: 1px solid var(--border-c);
+    border-radius: 4px;
+    color: var(--text-c);
+}
+
+#guidance input[type="file"] {
+    background: var(--text-in-main-c);
+    padding: 10px 22px;
+    border: 1px solid var(--border-c);
+    border-radius: 4px;
+    color: var(--text-c);
+}
+
+#dashboard {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+#dashboard>div {
+    position: absolute;
+    right: 4%;
+    width: 36%;
+    height: calc(41% - 160px);
+    padding-top: 160px;
+    border-top: 1px solid var(--border-c);
+    overflow: hidden;
+    user-select: none;
+}
+
+#dashboard>div .date {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 2px 8px;
+    background: var(--border-c);
+    color: var(--text-in-main-c);
+    font-style: normal;
+    font-size: 14px;
+}
+
+#dashboard>div .date.weekend {
+    background: transparent;
+    border: 1px solid var(--border-c);
+    border-top: none;
+    color: var(--border-c);
+}
+
+#dashboard>div .unit-title {
+    position: absolute;
+    top: -50px;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--border-c);
+    font-style: italic;
+    font-weight: bolder;
+    font-size: 144px;
+}
+
+#dashboard>div .cut {
+    color: var(--border-c);
+    margin-left: 15px;
+}
+
+#today {
+    top: 6%;
+}
+
+#tomorrow {
+    bottom: 6%;
+}
