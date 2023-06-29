@@ -146,6 +146,14 @@ class Term {
      * @returns {Term}
      */
     static async getInstance(mode, file) {
+        const discreteWeeksAnalyze = (record, weekPart) => {
+            let records = []
+            let weekParts = weekPart.split(",")
+            weekParts.forEach((wp) => {
+                records.push(record.replace(weekPart, wp))
+            })
+            return records
+        }
         const getWeekdayNumber = (weekday) => {
             return {
                 '星期一': 1,
@@ -163,21 +171,25 @@ class Term {
                 const dateObj = await t.parseExcel(file, "A8")
                 const subObj = await t.parseExcel(file, "C2:I7")
                 t.startDate = new Date(dateObj.match(/(\d{4}-\d{2}-\d{2})/)[0])
-                subObj.forEach(s => {
-                    Object.keys(s).forEach(key => {
+                subObj.forEach(s => { // s 表示每个科目
+                    Object.keys(s).forEach(key => { // key 表示每个科目名
                         let superposition = s[key].split("\n")
-                        superposition.forEach(ss => {
-                            let cols = ss.split("/")
-                            t.addSubjectCut(
-                                cols[0],
-                                cols[1].match(/(\d{1,2}-\d{1,2})/)[0].split("-")[0],
-                                cols[1].match(/(\d{1,2}-\d{1,2})/)[0].split("-")[1],
-                                getWeekdayNumber(key),
-                                cols[1].match(/(\d{1,2}-\d{1,2})/g)[1].split("-")[0],
-                                cols[1].match(/(\d{1,2}-\d{1,2})/g)[1].split("-")[1],
-                                cols[2],
-                                cols[3]
-                            )
+                        superposition.forEach(ss => { // superposition 表示每条记录
+                            let dss = discreteWeeksAnalyze(ss, ss.split("/")[1].split(")")[1])
+                            dss.forEach(sc => { // sc 表示按教学周段再次切割后的每条记录
+                                let cols = sc.split("/")
+                                t.addSubjectCut(
+                                    cols[0],
+                                    cols[1].match(/(\d{1,2}-\d{1,2})/)[0].split("-")[0],
+                                    cols[1].match(/(\d{1,2}-\d{1,2})/)[0].split("-")[1],
+                                    getWeekdayNumber(key),
+                                    cols[1].match(/(\d{1,2}(-\d{1,2})?)/g)[1].split("-")[0],
+                                    cols[1].match(/(\d{1,2}(-\d{1,2})?)/g)[1].split("-")[1] || cols[1].match(/(\d{1,2}(-\d{1,2})?)/g)[1],
+                                    cols[2],
+                                    cols[3]
+                                )
+                            })
+
                         })
                     })
                 })

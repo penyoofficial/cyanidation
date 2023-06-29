@@ -1,10 +1,19 @@
 /**
- * 存储学期对象到本地。
+ * 是否在 Wallpaper Engine 中运行
+ * @type {boolean}
 */
-async function setData() {
-    const mode = document.querySelector("#university-selector").value
-    const term = await Term.getInstance(mode, document.querySelector("#excel-selector").files[0])
+const isRunningInWallpaperEngine = false
+
+/**
+ * 存储学期对象到本地。
+ * @param {string} mode 模式
+ * @param {file} file 文件
+*/
+async function setData(mode, file, isThenRender, time) {
+    const term = await Term.getInstance(mode, file)
     localStorage.setItem("cy-data", JSON.stringify(term))
+    if (isThenRender)
+        render(time)
 }
 
 /**
@@ -55,13 +64,13 @@ function render(time) {
         <div class="date ${judgeWeekend(time.getDay())}">
             ${time.getMonth() + 1}月${time.getDate()}日， ${judgeWeek(time)}周${getChinese(time.getDay())}
         </div>
-        <div class="unit-title">今天</div>
+        <div class="unit-title">Today</div>
     `
     tomorrow.innerHTML = `
         <div class="date ${judgeWeekend(timeByd.getDay())}">
             ${timeByd.getMonth() + 1}月${timeByd.getDate()}日，${judgeWeek(timeByd)}周${getChinese(timeByd.getDay())}
         </div>
-        <div class="unit-title">明天</div>
+        <div class="unit-title">Tomor</div>
     `
     if (cutsToday.length)
         cutsToday.forEach(c => {
@@ -70,7 +79,7 @@ function render(time) {
             `
         })
     else
-        today.innerHTML += `<div class="cut">空闲！</div>`
+        today.innerHTML += `<div class="cut">是无事的一天呢，好好放松一下吧~</div>`
     if (cutsTomorrow.length)
         cutsTomorrow.forEach(c => {
             tomorrow.innerHTML += `
@@ -78,7 +87,7 @@ function render(time) {
             `
         })
     else
-        tomorrow.innerHTML += `<div class="cut">空闲！</div>`
+        tomorrow.innerHTML += `<div class="cut">是无事的一天呢，好好放松一下吧~</div>`
     setInterval(() => {
         render(new Date())
     }, 1800000)
@@ -94,16 +103,16 @@ let resetRequest = []
  * 重置程序。只能由用户在控制台*或者自定义控件监听*里被调用。
 */
 function reset() {
-    if (confirm("您正在做的操作将导致程序重置，确定要这么做吗？")) {
+    if (isRunningInWallpaperEngine || confirm("您正在做的操作将导致程序重置，确定要这么做吗？")) {
         document.querySelector("#f-reset").click()
         resetRequest = []
     }
 }
 
-window.addEventListener("keydown", function (event) {
+window.addEventListener("keydown", function (e) {
     const secLim = 1
     const timesLim = 8
-    if (event.key === "r" || event.key === "R") {
+    if (e.key === "r" || e.key === "R") {
         resetRequest.push(Date.now())
         if (resetRequest.length >= timesLim) {
             let lastThreeResetRequest = resetRequest.slice(-timesLim);
@@ -114,3 +123,11 @@ window.addEventListener("keydown", function (event) {
             resetRequest.shift()
     }
 })
+
+if (isRunningInWallpaperEngine)
+    setTimeout(() => {
+        document.querySelector("#app").classList.add("we")
+        const iframe = document.querySelector("iframe")
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document
+        iframeDocument.querySelector("#cpt").classList.add("we")
+    }, 500)

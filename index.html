@@ -6,35 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyanidation</title>
     <link rel="stylesheet" href="./main.css">
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="./modules/vue.global.js"></script>
+    <script src="./modules/xlsx.full.min.js"></script>
 </head>
 
 <body>
     <div id="app">
         <link id="theme-css" rel="stylesheet" :href="themeCSSPath">
         <div id="guidance" v-if="!isTableAvailable">
-            <div id="g-s1" v-if="gCode == 1">
+            <div v-show="g.pageCode == 1">
                 <h1>欢迎使用 Cyanidation 2！</h1>
                 <p>轻量级的课程表</p>
                 <span>
-                    <button @click="gCode++">下一步</button>
+                    <button @click="g.pageCode++">下一步</button>
                 </span>
             </div>
-            <div id="g-s2" v-else-if="gCode == 2">
+            <div v-show="g.pageCode == 2">
                 <h1>选择你的院校，并导入课程表</h1>
-                
                 <select id="university-selector">
                     <!-- <option value="AHTCM">安徽中医药大学（AHTCM）</option> -->
                     <option value="HFUU" selected>合肥学院（HFUU）</option>
                 </select>
-                <input type="file" id="excel-selector" @change="isTableFileReady = true">
+                <input type="file" id="excel-selector" @change="g.isTableFileReady = true">
                 <span>
-                    <button @click="gCode--">上一步</button>
-                    <button @click="gCode++, setData()" :disabled="!isTableFileReady">下一步</button>
+                    <button @click="g.pageCode--">上一步</button>
+                    <button @click="g.pageCode++" :disabled="!g.isTableFileReady">下一步</button>
                 </span>
             </div>
-            <div id="g-s3" v-else-if="gCode == 3">
+            <div v-show="g.pageCode == 3">
                 <h1>选择你喜爱的主题</h1>
                 <select id="theme-selector" v-model="theme" @change="setTheme()">
                     <option value="" selected>现代浅色（Modern Light）</option>
@@ -42,18 +41,18 @@
                     <option value="classic-amiya">古典阿米娅（Classic Amiya）</option>
                 </select>
                 <span>
-                    <button @click="gCode--, isTableFileReady = false">上一步</button>
-                    <button @click="gCode++">下一步</button>
+                    <button @click="g.pageCode--, g.isTableFileReady = false">上一步</button>
+                    <button @click="g.pageCode++">下一步</button>
                 </span>
             </div>
-            <div id="g-s4" v-else-if="gCode == 4">
+            <div v-show="g.pageCode == 4">
                 <h1>开始享受吧！</h1>
                 <span>
-                    <button @click="isTableAvailable = true, render()">开始使用</button>
+                    <button @click="isTableAvailable = true, setData()">开始使用</button>
                 </span>
             </div>
         </div>
-        <div id="dashboard" v-else :theme="theme">
+        <div id="dashboard" v-else>
             <iframe :src="themeCPTPath || './component.html'" frameborder="0"></iframe>
             <button class="f-go" id="f-go-back">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 86.6">
@@ -79,22 +78,29 @@
     let app = Vue.createApp({
         data() {
             return {
+                /**
+                 * 初始化设置中所用的一次性变量。
+                */
+                g: {
+                    pageCode: 1,
+                    university: "",
+                    isTableFileReady: false
+                },
                 isTableAvailable: localStorage.getItem("cy-data") ? true : false,
-                gCode: 1,
-                isTableFileReady: false,
                 theme: localStorage.getItem("cy-theme") || "",
                 /**
                  * 测试日期。
                  * *警告：该选项仅供开发人员调试程序用，用户请勿填写任何值！*
                  * @type {string}
                  */
-                testDate: "",
-                varComputed: new Date()
+                testDate: ""
             }
         },
         methods: {
             setData() {
-                setData()
+                setData(document.querySelector("#university-selector").value,
+                    document.querySelector("#excel-selector").files[0],
+                    true, this.testDate ? new Date(this.testDate) : new Date())
             },
             setTheme() {
                 localStorage.setItem("cy-theme", this.theme)
@@ -111,9 +117,10 @@
             },
             reset() {
                 localStorage.removeItem("cy-data")
+                this.g.pageCode = 1
+                this.g.university = ""
+                this.g.isTableFileReady = false
                 this.isTableAvailable = false
-                this.gCode = 1
-                this.isTableFileReady = false
             },
             playSFX() {
                 if (this.theme)
@@ -134,7 +141,7 @@
         },
         mounted() {
             if (this.isTableAvailable)
-                render(this.testDate ? new Date(this.testDate) : new Date())
+                this.render()
         }
     }).mount("#app")
 </script>
